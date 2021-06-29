@@ -12,14 +12,21 @@ public class Player : MonoBehaviour
     private float _jumpHeight = 10.0f;
     private Vector3 _direction;
     private CharacterController _cc;
+    private Animator _anim;
 
     private void Start()
     {
         _cc = GetComponent<CharacterController>();
+        _anim = GetComponentInChildren<Animator>();
         if(_cc == null)
         {
             Debug.LogError("CharacterController is NULL");
         }
+        if(_anim == null)
+        {
+            Debug.LogError("Animator is NULL");
+        }
+
     }
 
     private void Update()
@@ -35,7 +42,7 @@ public class Player : MonoBehaviour
         {
             float horizontalInput = Input.GetAxisRaw("Horizontal");
             _direction = new Vector3(0, 0, horizontalInput) * _speed;
-            ;
+            _anim.SetFloat("Speed", Mathf.Abs(horizontalInput));
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
