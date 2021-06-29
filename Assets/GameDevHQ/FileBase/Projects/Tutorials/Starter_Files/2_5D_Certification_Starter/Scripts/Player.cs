@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     private Vector3 _direction;
     private CharacterController _cc;
     private Animator _anim;
+    private bool _jumping = false;
 
     private void Start()
     {
@@ -26,33 +27,40 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("Animator is NULL");
         }
-
     }
 
     private void Update()
     {
-
-        PlayerMove();
-    
+        PlayerMove();  
     }
 
     void PlayerMove()
     {
         if (_cc.isGrounded == true)
         {
+            if(_jumping == true)
+            {
+                _jumping = false;
+                _anim.SetBool("Jumping", _jumping);
+            }
+
             float horizontalInput = Input.GetAxisRaw("Horizontal");
             _direction = new Vector3(0, 0, horizontalInput) * _speed;
             _anim.SetFloat("Speed", Mathf.Abs(horizontalInput));
+            
+            if(horizontalInput != 0)
+            {
+                Vector3 facing = transform.localEulerAngles;
+                facing.y = _direction.z > 0 ? 0 : 180;
+                transform.localEulerAngles = facing;
+            }
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                _anim.SetBool("Jumping", _jumping);
                 _direction.y += _jumpHeight;
-            }
-            //do things
-        }
-        else
-        {
 
+            }
         }
 
         _direction.y -= _gravity * Time.deltaTime;
