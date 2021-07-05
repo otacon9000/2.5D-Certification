@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     private CharacterController _cc;
     private Animator _anim;
     private bool _jumping = false;
+    private bool _OnLedge = false;
+    private Ledge _lastLedge;
 
     private void Start()
     {
@@ -32,6 +34,13 @@ public class Player : MonoBehaviour
     private void Update()
     {
         PlayerMove();  
+        if(_OnLedge == true)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                _anim.SetTrigger("ClimbUp");
+            }
+        }
     }
 
     void PlayerMove()
@@ -42,6 +51,8 @@ public class Player : MonoBehaviour
             {
                 _jumping = false;
                 _anim.SetBool("Jumping", _jumping);
+                
+
             }
 
             float horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -57,13 +68,36 @@ public class Player : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                _jumping = true;
                 _anim.SetBool("Jumping", _jumping);
                 _direction.y += _jumpHeight;
 
             }
+
         }
 
         _direction.y -= _gravity * Time.deltaTime;
         _cc.Move(_direction * Time.deltaTime);
     }
+
+    public void GrabLedge(Vector3 grabPosition, Ledge currentLedge)
+    {
+        _cc.enabled = false;
+        _anim.SetBool("GrabLedge", true);
+        _anim.SetBool("Jumping", false);
+        _anim.SetFloat("Speed", 0.0f);
+        _OnLedge = true;
+        _lastLedge = currentLedge;
+        transform.position = grabPosition;
+       
+    }
+
+    public void ClimbUp()
+    {
+        transform.position = _lastLedge.GetStandPosition();
+        _anim.SetBool("GrabLedge", false);
+        _cc.enabled = true; ;
+
+    }
+
 }
