@@ -100,4 +100,13 @@ public class Player : MonoBehaviour
 
     }
 
+    public void AddCoin()
+    {
+        Debug.Log("COIN");
+    }
+    public void AddCard()
+    {
+        Debug.Log("CARD");
+    }
+
 }
