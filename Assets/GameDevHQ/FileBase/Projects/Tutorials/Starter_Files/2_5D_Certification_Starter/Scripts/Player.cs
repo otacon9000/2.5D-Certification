@@ -5,6 +5,8 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
+    private int _lives = 3;
+    [SerializeField]
     private float _speed = 5.0f;    
     [SerializeField]
     private float _gravity = 1.0f;
@@ -17,14 +19,15 @@ public class Player : MonoBehaviour
     private bool _jumping = false;
     private bool _OnLedge = false;
     private Ledge _lastLedge;
-
+    private int _coin = 0;
     public GameObject rollPos;
 
     private void Start()
     {
         _cc = GetComponent<CharacterController>();
         _anim = GetComponentInChildren<Animator>();
-        if(_cc == null)
+        
+        if (_cc == null)
         {
             Debug.LogError("CharacterController is NULL");
         }
@@ -32,6 +35,8 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("Animator is NULL");
         }
+
+        UIManager.Instance.UpdateLives(_lives);
     }
 
     private void Update()
@@ -127,14 +132,31 @@ public class Player : MonoBehaviour
     }
 
 
-
-    public void AddCoin()
-    {
-        Debug.Log("COIN");
-    }
     public void AddCard()
     {
         Debug.Log("CARD");
+    }
+
+    public void AddCoin()
+    {
+        _coin++;
+        UIManager.Instance.UpdateCoinScore(_coin);
+    }
+
+    public void Damage()
+    {
+
+        if (_lives > 0)
+        {
+            _lives--;
+            UIManager.Instance.UpdateLives(_lives);
+        }
+        else
+        {
+ 
+            GameManager.Instance.RestartGame();
+        }
+
     }
 
 }
