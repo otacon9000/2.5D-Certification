@@ -143,6 +143,11 @@ public class Player : MonoBehaviour
         UIManager.Instance.UpdateCoinScore(_coin);
     }
 
+    public int GetCoinValue()
+    {
+        return _coin;
+    }
+
     public void Damage()
     {
 
